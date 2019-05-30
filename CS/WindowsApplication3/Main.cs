@@ -1,20 +1,24 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 using DevExpress.XtraEditors;
-using System.IO;
+using System;
+using System.Windows.Forms;
 
 
-namespace DXSample {
-    public partial class Main: XtraForm {
-        public Main() {
+namespace DXSample
+{
+    public partial class Main : XtraForm
+    {
+        DragDropProvider provider;
+
+        public Main()
+        {
             InitializeComponent();
         }
-        DragDropProvider provider;
+
+        private void OnFormClosing(object sender, FormClosingEventArgs e)
+        {
+            if(provider != null)
+                provider.DisableDragDrop();
+        }
 
         private void OnLoad(object sender, EventArgs e)
         {
@@ -26,12 +30,6 @@ namespace DXSample {
         {
             SimpleButton btn = sender as SimpleButton;
             pictureEdit1.DoDragDrop(btn.Image, DragDropEffects.Copy);
-        }
-
-        private void OnFormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (provider != null)
-                provider.DisableDragDrop();
         }
     }
 }
