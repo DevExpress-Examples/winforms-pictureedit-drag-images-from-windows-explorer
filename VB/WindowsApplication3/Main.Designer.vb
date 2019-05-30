@@ -68,23 +68,23 @@ Namespace DXSample
 			Me.layoutControl1.Size = New System.Drawing.Size(1032, 160)
 			Me.layoutControl1.TabIndex = 3
 			Me.layoutControl1.Text = "layoutControl1"
-			' 
-			' simpleButton2
-			' 
-			Me.simpleButton2.Image = My.Resources._2
-			Me.simpleButton2.ImageLocation = DevExpress.XtraEditors.ImageLocation.MiddleCenter
+            ' 
+            ' simpleButton2
+            ' 
+            Me.simpleButton2.Image = Resources._2
+            Me.simpleButton2.ImageLocation = DevExpress.XtraEditors.ImageLocation.MiddleCenter
 			Me.simpleButton2.Location = New System.Drawing.Point(729, 12)
 			Me.simpleButton2.Name = "simpleButton2"
 			Me.simpleButton2.Size = New System.Drawing.Size(291, 136)
 			Me.simpleButton2.StyleController = Me.layoutControl1
 			Me.simpleButton2.TabIndex = 2
 			Me.simpleButton2.Text = "simpleButton2"
-'			Me.simpleButton2.MouseDown += New System.Windows.Forms.MouseEventHandler(Me.OnSimpleButtonMouseDown);
-			' 
-			' simpleButton1
-			' 
-			Me.simpleButton1.Image = My.Resources._3
-			Me.simpleButton1.ImageLocation = DevExpress.XtraEditors.ImageLocation.MiddleCenter
+            '			Me.simpleButton2.MouseDown += New System.Windows.Forms.MouseEventHandler(Me.OnSimpleButtonMouseDown);
+            ' 
+            ' simpleButton1
+            ' 
+            Me.simpleButton1.Image = Resources._3
+            Me.simpleButton1.ImageLocation = DevExpress.XtraEditors.ImageLocation.MiddleCenter
 			Me.simpleButton1.Location = New System.Drawing.Point(374, 12)
 			Me.simpleButton1.Name = "simpleButton1"
 			Me.simpleButton1.Size = New System.Drawing.Size(351, 136)

@@ -1,12 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
-using DevExpress.Skins;
-using System.Drawing;
 using DevExpress.XtraEditors;
-using System.Runtime.InteropServices;
-using System.Reflection;
+using System;
+using System.Drawing;
 using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace DXSample
 {
@@ -16,34 +14,39 @@ namespace DXSample
         Image draggedImage;
         PictureEdit edit;
 
-        [DllImport("GdiPlus.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
-        private static extern int GdipCreateBitmapFromGdiDib(IntPtr pBIH, IntPtr pPix, out IntPtr pBitmap); 
-
         public DragDropProvider(PictureEdit edit)
         {
             this.edit = edit;
             edit.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
         }
 
-        public void EnableDragDrop()
+        [DllImport("GdiPlus.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
+        private static extern int GdipCreateBitmapFromGdiDib(IntPtr pBIH, IntPtr pPix, out IntPtr pBitmap);
+
+
+        private IntPtr GetPixelInfo(IntPtr bmpPtr)
         {
-            edit.AllowDrop = true;
-            edit.DragEnter += OnDragEnter;
-            edit.DragDrop += OnDragDrop;
-        }
-        
-        private void OnDragEnter(object sender, DragEventArgs e)
-        {
-            SetDragDropEffects(e);
+            BITMAPINFOHEADER bmi = (BITMAPINFOHEADER)Marshal.PtrToStructure(bmpPtr, typeof(BITMAPINFOHEADER));
+            if(bmi.biSizeImage == 0)
+                bmi.biSizeImage = (uint)(((((bmi.biWidth * bmi.biBitCount) + 31) & ~31) >> 3) * bmi.biHeight);
+            int p = (int)bmi.biClrUsed;
+            if((p == 0) && (bmi.biBitCount <= 8))
+                p = 1 << bmi.biBitCount; p = (p * 4) + (int)bmi.biSize + (int)bmpPtr;
+            return (IntPtr)p;
         }
 
         private void OnDragDrop(object sender, DragEventArgs e)
         {
-            if ((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy)
+            if((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy)
             {
                 edit.Image = draggedImage;
                 draggedImage = null;
             }
+        }
+
+        private void OnDragEnter(object sender, DragEventArgs e)
+        {
+            SetDragDropEffects(e);
         }
 
         private void SetDragDropEffects(DragEventArgs e)
@@ -51,7 +54,7 @@ namespace DXSample
             e.Effect = DragDropEffects.None;
 
             MemoryStream str = e.Data.GetData(DataFormats.Dib) as MemoryStream;
-            if (str != null)
+            if(str != null)
             {
                 try
                 {
@@ -68,7 +71,7 @@ namespace DXSample
             else
             {
                 string[] fileName = e.Data.GetData("FileName") as string[];
-                if (fileName != null)
+                if(fileName != null)
                 {
                     try
                     {
@@ -83,7 +86,7 @@ namespace DXSample
                 else
                 {
                     object bmp = e.Data.GetData("Bitmap");
-                    if (bmp != null)
+                    if(bmp != null)
                     {
                         draggedImage = (Image)bmp;
                         e.Effect = DragDropEffects.Copy;
@@ -98,24 +101,13 @@ namespace DXSample
             IntPtr pPix = GetPixelInfo(pDIB);
             MethodInfo mi = typeof(Bitmap).GetMethod("FromGDIplus",
                             BindingFlags.Static | BindingFlags.NonPublic);
-            if (mi == null) return null; 
+            if(mi == null) return null;
             IntPtr pBmp = IntPtr.Zero;
             int status = GdipCreateBitmapFromGdiDib(pDIB, pPix, out pBmp);
-            if ((status == 0) && (pBmp != IntPtr.Zero)) 
+            if((status == 0) && (pBmp != IntPtr.Zero))
                 return (Bitmap)mi.Invoke(null, new object[] { pBmp });
             else
-                return null; 
-        }
-
-
-        private IntPtr GetPixelInfo(IntPtr bmpPtr) { 
-            BITMAPINFOHEADER bmi = (BITMAPINFOHEADER)Marshal.PtrToStructure(bmpPtr, typeof(BITMAPINFOHEADER)); 
-            if (bmi.biSizeImage == 0)       
-                bmi.biSizeImage = (uint)(((((bmi.biWidth * bmi.biBitCount) + 31) & ~31) >> 3) * bmi.biHeight);
-            int p = (int)bmi.biClrUsed; 
-            if ((p == 0) && (bmi.biBitCount <= 8))   
-                p = 1 << bmi.biBitCount; p = (p * 4) + (int)bmi.biSize + (int)bmpPtr; 
-            return (IntPtr)p; 
+                return null;
         }
 
         public void DisableDragDrop()
@@ -123,24 +115,33 @@ namespace DXSample
             edit.DragEnter -= OnDragEnter;
             edit.DragDrop -= OnDragDrop;
         }
+
+        public void EnableDragDrop()
+        {
+            edit.AllowDrop = true;
+            edit.DragEnter += OnDragEnter;
+            edit.DragDrop += OnDragDrop;
+        }
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct BITMAPINFOHEADER {
-        public uint biSize; 
-        public int biWidth; 
+    public struct BITMAPINFOHEADER
+    {
+        public uint biSize;
+        public int biWidth;
         public int biHeight;
         public ushort biPlanes;
         public ushort biBitCount;
         public uint biCompression;
-        public uint biSizeImage; 
+        public uint biSizeImage;
         public int biXPelsPerMeter;
-        public int biYPelsPerMeter; 
+        public int biYPelsPerMeter;
         public uint biClrUsed;
         public uint biClrImportant;
-        
-        public void Init() { 
-            biSize = (uint)Marshal.SizeOf(this); 
+
+        public void Init()
+        {
+            biSize = (uint)Marshal.SizeOf(this);
         }
     }
 }
