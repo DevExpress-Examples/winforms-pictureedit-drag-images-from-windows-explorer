@@ -3,18 +3,29 @@
 [![](https://img.shields.io/badge/Open_in_DevExpress_Support_Center-FF7200?style=flat-square&logo=DevExpress&logoColor=white)](https://supportcenter.devexpress.com/ticket/details/E3171)
 [![](https://img.shields.io/badge/📖_How_to_use_DevExpress_Examples-e9f6fc?style=flat-square)](https://docs.devexpress.com/GeneralInformation/403183)
 <!-- default badges end -->
-<!-- default file list -->
-*Files to look at*:
+
+# WinForms Picture Editor - Drag-and-drop images from Windows Explorer
+
+This example demonstrates how to drag and drop images from Windows Explorer to the WinForms PictureEdit. The example creates a `DragDropProvider` class and calls its `EnableDragDrop` method:
+
+```csharp
+private void OnLoad(object sender, EventArgs e) {
+    provider = new DragDropProvider(pictureEdit1);
+    provider.EnableDragDrop();
+}
+```
+
+The example also demonstrates how to drag and drop images displayed on buttons.
+
+```csharp
+private void OnSimpleButtonMouseDown(object sender, MouseEventArgs e) {
+    SimpleButton btn = sender as SimpleButton;
+    pictureEdit1.DoDragDrop(btn.Image, DragDropEffects.Copy);
+}
+```
+
+
+## Files to Review
 
 * [DragDropProvider.cs](./CS/WindowsApplication3/DragDropProvider.cs) (VB: [DragDropProvider.vb](./VB/WindowsApplication3/DragDropProvider.vb))
 * [Main.cs](./CS/WindowsApplication3/Main.cs) (VB: [Main.vb](./VB/WindowsApplication3/Main.vb))
-* [Program.cs](./CS/WindowsApplication3/Program.cs) (VB: [Program.vb](./VB/WindowsApplication3/Program.vb))
-<!-- default file list end -->
-# How to implement the drag-and-drop functionality for PictureEdit so it is possible to drop images to it from Windows Explorer
-
-
-<p>This example illustrates how to drag and drop images from Windows Explorer to PictureEdit. For this it is sufficient to create DragDropProvider and call the EnableDragDrop method. Also, in this example you can drag and drop images from two buttons onto an application form. </p>
-
-<br/>
-
-
