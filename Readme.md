@@ -6,7 +6,7 @@
 
 # WinForms Picture Editor - Drag-and-drop images from Windows Explorer
 
-This example demonstrates how to drag and drop images from Windows Explorer to the WinForms PictureEdit. The example creates a `DragDropProvider` class and calls its `EnableDragDrop` method:
+This example demonstrates how to drag images from Windows Explorer into the WinForms PictureEdit. The example creates a `DragDropProvider` class and calls its `EnableDragDrop` method:
 
 ```csharp
 private void OnLoad(object sender, EventArgs e) {
